@@ -1,34 +1,37 @@
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  const { topic } = await req.json()
+  const { topic } = await req.json();
 
-  const prompt = `Write a detailed blog post in Bengali on the topic: "${topic}"`
+  const prompt = `Write a detailed blog post in English on the topic: "${topic}"`;
 
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 
       },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    })
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+      }),
+    });
 
-    const result = await response.json()
-    console.log("✅ Gemini API response:", result)
+    const result = await response.json();
+    console.log("✅ OpenAI response:", result);
 
-    const aiText = result?.candidates?.[0]?.content?.parts?.[0]?.text
+    const aiText = result?.choices?.[0]?.message?.content;
 
     if (!aiText) {
-      return NextResponse.json({ blog: "Could not generate blog." }, { status: 500 })
+      return NextResponse.json({ blog: "Could not generate blog." }, { status: 500 });
     }
 
-    return NextResponse.json({ blog: aiText })
+    return NextResponse.json({ blog: aiText });
 
   } catch (error) {
-    console.error("❌ Error from Gemini:", error)
-    return NextResponse.json({ blog: "Could not generate blog." }, { status: 500 })
+    console.error("❌ Error from OpenAI:", error);
+    return NextResponse.json({ blog: "Could not generate blog." }, { status: 500 });
   }
 }

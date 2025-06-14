@@ -1,6 +1,7 @@
 "use client"
 import React from 'react';
 import Link from 'next/link'
+import LoginButton from './LoginButton';
 
 const Navbar = () => {
     return (
@@ -16,9 +17,9 @@ const Navbar = () => {
       </div>
       <div className="flex gap-4">
         
-        <Link href="/login" className="text-gray-700 hover:text-blue-600">
-        Login
-        </Link>
+        
+        <LoginButton></LoginButton>
+        
       </div>
     </nav>  
         </div>

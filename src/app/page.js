@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import UserInfo from "@/components/UserInfo"
 export default function Home() {
    const [latestPosts, setLatestPosts] = useState([])
 
@@ -23,6 +24,7 @@ export default function Home() {
         <p className="text-gray-600 dark:text-gray-300 text-lg mb-6">
           Create, read, and manage blog posts with ease.
         </p>
+        {/* <UserInfo></UserInfo> */}
         <div className="flex justify-center gap-4">
           <Link href="/create">
             <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">

@@ -37,14 +37,18 @@ const CreatePage = () => {
       }
     } catch (err) {
       console.error(err)
-      alert('Server Error!')
+      alert('❌ Server Error!')
     }
 
     setLoading(false)
   }
 
   const generateContent = async () => {
-    if (!title) return alert("Please enter a topic (title) first.")
+    if (!title) {
+      alert("⚠️ Please enter a topic (title) first.")
+      return
+    }
+
     setGenerating(true)
 
     try {
@@ -55,10 +59,14 @@ const CreatePage = () => {
       })
 
       const data = await res.json()
-      setContent(data.blog || "Could not generate content.")
+      if (res.ok) {
+        setContent(data.blog || "⚠️ No content generated.")
+      } else {
+        alert("⚠️ Blog generation failed.")
+      }
     } catch (err) {
-      console.error(err)
-      alert('AI generation failed!')
+      console.error("Error generating blog:", err)
+      alert('❌ AI generation failed!')
     }
 
     setGenerating(false)
@@ -70,6 +78,7 @@ const CreatePage = () => {
         <h1 className="text-2xl font-bold mb-6 text-gray-800">Create a New Blog Post</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Title Input */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">Title (Topic)</label>
             <input
@@ -82,6 +91,7 @@ const CreatePage = () => {
             />
           </div>
 
+          {/* Generate AI Content Button */}
           <div className="flex justify-end mb-2">
             <button
               type="button"
@@ -89,10 +99,11 @@ const CreatePage = () => {
               disabled={generating}
               className="text-sm text-blue-600 hover:underline"
             >
-              {generating ? "Generating..." : "Generate with AI"}
+              {generating ? "Generating..." : "✍️ Generate with AI"}
             </button>
           </div>
 
+          {/* Content Textarea */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">Content</label>
             <textarea
@@ -104,6 +115,7 @@ const CreatePage = () => {
             />
           </div>
 
+          {/* Tags Input */}
           <div>
             <label className="block text-gray-700 font-medium mb-2">Tags</label>
             <input
@@ -111,16 +123,17 @@ const CreatePage = () => {
               value={tags}
               onChange={(e) => setTags(e.target.value)}
               className="w-full text-black border px-4 py-2 rounded-md"
-              placeholder="e.g., react, nextjs"
+              placeholder="e.g., react, ai, blog"
             />
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium"
           >
-            {loading ? 'Publishing...' : 'Publish'}
+            {loading ? 'Publishing...' : '🚀 Publish'}
           </button>
         </form>
       </div>
