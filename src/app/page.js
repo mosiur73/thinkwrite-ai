@@ -1,23 +1,20 @@
-// "use client"
-// import { useEffect, useState } from "react"
+"use client"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import UserInfo from "@/components/UserInfo"
-import { getServerSession } from "next-auth"
-import { authOption } from "./api/auth/[...nextauth]/route"
-export default async function Home() {
+export default function Home() {
+  
+   const [latestPosts, setLatestPosts] = useState([])
 
-  const session=await getServerSession(authOption)
-  //  const [latestPosts, setLatestPosts] = useState([])
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const res = await fetch("/api/posts/[id]")
+      const data = await res.json()
+      setLatestPosts(data.slice(0, 3)) 
+    }
 
-  // useEffect(() => {
-  //   const fetchPosts = async () => {
-  //     const res = await fetch("/api/posts/[id]")
-  //     const data = await res.json()
-  //     setLatestPosts(data.slice(0, 3)) 
-  //   }
-
-  //   fetchPosts()
-  // }, [])
+    fetchPosts()
+  }, [])
 
   return (
    <div className="min-h-screen bg-white dark:bg-gray-900 px-6 py-12">
@@ -28,8 +25,7 @@ export default async function Home() {
         <p className="text-gray-600 dark:text-gray-300 text-lg mb-6">
           Create, read, and manage blog posts with ease.
         </p>
-        {/* <UserInfo></UserInfo>
-        {JSON.stringify(session)} */}
+        {/* <UserInfo></UserInfo> */}
         <div className="flex justify-center gap-4">
           <Link href="/create">
             <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
@@ -44,7 +40,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* <section className="max-w-3xl mx-auto">
+      <section className="max-w-3xl mx-auto">
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
           Latest Posts
         </h2>
@@ -64,7 +60,7 @@ export default async function Home() {
             ))}
           </div>
         )}
-      </section> */}
+      </section>
     </div>
   );
 }
